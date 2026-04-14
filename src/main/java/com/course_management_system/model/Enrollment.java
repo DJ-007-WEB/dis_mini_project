@@ -6,5 +6,6 @@ public class Enrollment {
     private int enrollmentId;
     private int studentId;
     private int courseId;
-    private String status; // e.g., "Ongoing", "Completed"
+    private String enrollDate; // Date of enrollment
+    private String status;     // e.g., "Ongoing", "Completed"
 }

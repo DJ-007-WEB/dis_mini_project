@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Extras ###
+*.zip
+*.tar
+*.gz
+tools/
+*.log

@@ -2,25 +2,30 @@ package com.course_management_system.controller;
 
 import com.course_management_system.model.*;
 import com.course_management_system.service.StudentService;
+import com.course_management_system.service.EnrollmentService;
 import com.course_management_system.repository.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 
+/**
+ * Controller to handle all web requests for the Course Management System.
+ * Bridging the frontend with the newly improved logic layer.
+ */
 @WebServlet(urlPatterns = {
         "/viewStudents", "/addStudent", "/viewCourses", "/addLesson",
         "/enrollStudent", "/addInstructor", "/viewInstructors",
         "/addAssignment", "/viewAssignments", "/addQuestion", "/viewQuestions"
 })
 public class MainController extends HttpServlet {
-    private StudentService studentService = new StudentService();
-    private CourseRepository courseRepo = new CourseRepository();
-    private LessonRepository lessonRepo = new LessonRepository();
-    private InstructorRepository instructorRepo = new InstructorRepository();
-    private AssignmentRepository assignRepo = new AssignmentRepository();
-    private QuestionRepository questionRepo = new QuestionRepository();
-    private CertificateRepository certRepo = new CertificateRepository();
+    private final StudentService studentService = new StudentService();
+    private final EnrollmentService enrollmentService = new EnrollmentService();
+    private final CourseRepository courseRepo = new CourseRepository();
+    private final LessonRepository lessonRepo = new LessonRepository();
+    private final InstructorRepository instructorRepo = new InstructorRepository();
+    private final AssignmentRepository assignRepo = new AssignmentRepository();
+    private final QuestionRepository questionRepo = new QuestionRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -71,6 +76,15 @@ public class MainController extends HttpServlet {
         } else if (path.equals("/addLesson")) {
             int courseId = Integer.parseInt(request.getParameter("courseId"));
             lessonRepo.addLesson(courseId, request.getParameter("title"), request.getParameter("desc"), request.getParameter("url"));
+            response.sendRedirect("viewCourses");
+        } else if (path.equals("/enrollStudent")) {
+            try {
+                int studentId = Integer.parseInt(request.getParameter("studentId"));
+                int courseId = Integer.parseInt(request.getParameter("courseId"));
+                enrollmentService.enrollStudent(studentId, courseId);
+            } catch (Exception e) {
+                // Log error potentially
+            }
             response.sendRedirect("viewCourses");
         }
     }

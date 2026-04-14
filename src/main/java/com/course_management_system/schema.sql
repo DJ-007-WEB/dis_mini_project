@@ -4,6 +4,7 @@ USE course_management_db;
 CREATE TABLE instructor (
                             instructor_id INT AUTO_INCREMENT PRIMARY KEY,
                             name VARCHAR(100),
+                            phone VARCHAR(15),
                             email VARCHAR(100)
 );
 
@@ -58,6 +59,16 @@ CREATE TABLE enrollment (
                             student_id INT,
                             course_id INT,
                             status VARCHAR(20) DEFAULT 'Ongoing',
+                            FOREIGN KEY (student_id) REFERENCES student(student_id),
+                            FOREIGN KEY (course_id) REFERENCES course(course_id)
+);
+
+-- Certificates table for issued certificates
+CREATE TABLE certificates (
+                            cert_id INT AUTO_INCREMENT PRIMARY KEY,
+                            student_id INT,
+                            course_id INT,
+                            issue_date DATETIME,
                             FOREIGN KEY (student_id) REFERENCES student(student_id),
                             FOREIGN KEY (course_id) REFERENCES course(course_id)
 );

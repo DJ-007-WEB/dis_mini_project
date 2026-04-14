@@ -1,29 +1,62 @@
 package com.course_management_system.util;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBConnection {
-    private static Connection connection = null;
+    private static final Logger log = LoggerFactory.getLogger(DBConnection.class);
+    private static HikariDataSource dataSource;
 
-    // These will be updated once your friend pushes the MySQL details
-    private static final String URL = "jdbc:mysql://localhost:3306/course_management_db";
-    private static final String USER = "root";
-    private static final String PASSWORD = "password";
+    static {
+        try {
+            Properties props = new Properties();
+            try (InputStream is = DBConnection.class.getClassLoader().getResourceAsStream("application.properties")) {
+                if (is != null) props.load(is);
+            } catch (Exception ex) {
+                log.warn("Could not load application.properties from classpath, using defaults.", ex);
+            }
+
+            String url = props.getProperty("db.url", "jdbc:mysql://localhost:3306/course_management_db");
+            String user = props.getProperty("db.user", "root");
+            String pass = props.getProperty("db.password", "password");
+
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(url);
+            config.setUsername(user);
+            config.setPassword(pass);
+            config.setMaximumPoolSize(Integer.parseInt(props.getProperty("db.pool.size", "10")));
+            config.setPoolName("cms-hikari-pool");
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+            dataSource = new HikariDataSource(config);
+            log.info("HikariCP initialized with URL={}", url);
+        } catch (Exception e) {
+            log.error("Failed to initialize HikariCP DataSource", e);
+        }
+    }
 
     public static Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            if (dataSource == null) {
+                throw new SQLException("DataSource not initialized");
             }
-        } catch (ClassNotFoundException e) {
-            System.err.println("JDBC Driver not found!");
+            return dataSource.getConnection();
         } catch (SQLException e) {
-            System.err.println("❌ Connection Failed! Check your Username/Password/DB Name.");
-            System.err.println("Error: " + e.getMessage());
+            log.error("Failed to get DB Connection", e);
+            return null;
         }
-        return connection;
+    }
+
+    public static void shutdown() {
+        if (dataSource != null) dataSource.close();
     }
 }
