@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, AppContext } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -12,6 +12,8 @@ import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import Assignment from './pages/Assignment';
 import Certificate from './pages/Certificate';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const AlertContainer = () => {
   const { alerts, removeAlert } = useContext(AppContext);
@@ -33,25 +35,56 @@ const AlertContainer = () => {
   );
 };
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useContext(AppContext);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
+function AppRoutes() {
+  return (
+    <div className="flex flex-col min-h-screen font-sans">
+      <Navbar />
+      <AlertContainer />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/course/:id" element={<CourseDetail />} />
+          
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/assignment/:id" element={
+            <ProtectedRoute>
+              <Assignment />
+            </ProtectedRoute>
+          } />
+          <Route path="/certificate" element={
+            <ProtectedRoute>
+              <Certificate />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
     <AppProvider>
       <Router>
-        <div className="flex flex-col min-h-screen font-sans">
-          <Navbar />
-          <AlertContainer />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/course/:id" element={<CourseDetail />} />
-              <Route path="/assignment/:id" element={<Assignment />} />
-              <Route path="/certificate" element={<Certificate />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <AppRoutes />
       </Router>
     </AppProvider>
   );

@@ -56,5 +56,25 @@ export const user = {
   completedCourses: [5],
   certificates: [
     { id: 1, courseTitle: "Introduction to JavaScript", date: "2023-12-01" }
-  ]
+  ],
+  learningStreak: { current: 5, best: 12 },
+  weeklyActivity: [2.5, 3, 0, 4.5, 2, 3.5, 1.5],
+  upcomingDeadlines: [
+    { id: 1, courseId: 1, assignmentId: 201, title: 'What is a Higher Order Component?', dueDate: new Date(Date.now() + 86400000 * 0.5).toISOString(), courseName: 'Advanced React Patterns', urgency: 'red' },
+    { id: 2, courseId: 2, assignmentId: 202, title: 'Which method is used for SSR in Next.js?', dueDate: new Date(Date.now() + 86400000 * 2).toISOString(), courseName: 'Fullstack Next.js', urgency: 'amber' },
+    { id: 3, courseId: 3, assignmentId: 203, title: 'What does UI stand for?', dueDate: new Date(Date.now() + 86400000 * 5).toISOString(), courseName: 'UI/UX for Developers', urgency: 'green' }
+  ],
+  recentActivities: [
+    { id: 1, type: 'lesson', title: 'Completed lesson: Color Theory', timestamp: '2 hours ago', courseId: 3 },
+    { id: 2, type: 'certificate', title: 'Earned certificate: Introduction to JavaScript', timestamp: '1 day ago', courseId: null },
+    { id: 3, type: 'course', title: 'Started new course: UI/UX for Developers', timestamp: '3 days ago', courseId: 3 }
+  ],
+  achievements: [
+    { id: 1, name: 'First Course', icon: '🏆', earnedDate: '2023-10-15', description: 'Completed your first course!' },
+    { id: 2, name: 'Speed Learner', icon: '⚡', earnedDate: '2023-11-20', description: 'Completed 3 lessons in one day' },
+    { id: 3, name: '5 Course Streak', icon: '🔥', earnedDate: '2023-12-05', description: 'Enrolled in 5 consecutive courses' }
+  ],
+  totalLearningHours: 47,
+  averageQuizScore: 87,
+  averageCourseCompletion: 15
 };
