@@ -1,7 +1,7 @@
 package com.course_management_system.repository;
 
-import com.course_management_system.model.Enrollment;
 import com.course_management_system.util.DBConnection;
+import com.course_management_system.model.Enrollment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

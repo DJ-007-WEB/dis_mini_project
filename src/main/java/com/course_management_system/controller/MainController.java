@@ -1,9 +1,16 @@
 package com.course_management_system.controller;
 
-import com.course_management_system.model.*;
+import com.course_management_system.model.Student;
+import com.course_management_system.model.Instructor;
+import com.course_management_system.model.Assignment;
+import com.course_management_system.model.Question;
 import com.course_management_system.service.StudentService;
 import com.course_management_system.service.EnrollmentService;
-import com.course_management_system.repository.*;
+import com.course_management_system.repository.CourseRepository;
+import com.course_management_system.repository.LessonRepository;
+import com.course_management_system.repository.InstructorRepository;
+import com.course_management_system.repository.AssignmentRepository;
+import com.course_management_system.repository.QuestionRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
