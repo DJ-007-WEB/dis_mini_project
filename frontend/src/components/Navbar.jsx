@@ -1,136 +1,121 @@
-import React, { useState, useContext } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AppContext } from '../context/AppContext';
+import React, { useContext } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  const { isAuthenticated, logout, isAdmin, user } = useContext(AppContext);
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useContext(AppContext);
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Courses', path: '/courses' },
-  ];
-  
-  if (isAuthenticated) {
-    navLinks.push({ name: 'Dashboard', path: '/dashboard' });
-  }
-
-  const isActive = (path) => location.pathname === path;
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav className="bg-slate-900 shadow-md sticky top-0 z-50">
+    <nav className="sticky top-0 z-[100] bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-white">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
+                <span className="text-white font-black text-xl">L</span>
+              </div>
+              <span className="text-2xl font-black tracking-tight text-white group-hover:text-emerald-400 transition-colors">
                 LearnHub
               </span>
             </Link>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`transition-colors duration-300 font-medium py-2 ${
-                  isActive(link.path)
-                    ? 'text-emerald-400 border-b-2 border-emerald-400'
-                    : 'text-gray-300 hover:text-emerald-300'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-            
-            <div className="relative flex items-center space-x-4">
-              {isAuthenticated ? (
-                <>
-                  <button onClick={handleLogout} className="text-gray-300 hover:text-emerald-300 transition-colors font-medium">
+            <Link
+              to="/courses"
+              className={`text-sm font-bold uppercase tracking-wider transition-all ${
+                isActive("/courses")
+                  ? "text-emerald-400"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Courses
+            </Link>
+
+            {isAuthenticated ? (
+              <>
+                {!isAdmin ? (
+                  <Link
+                    to="/dashboard"
+                    className={`text-sm font-bold uppercase tracking-wider transition-all ${
+                      isActive("/dashboard")
+                        ? "text-emerald-400"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    My Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      to="/admin/dashboard"
+                      className={`text-sm font-bold uppercase tracking-wider transition-all ${
+                        isActive("/admin/dashboard")
+                          ? "text-emerald-400"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      Admin Panel
+                    </Link>
+                    <Link
+                      to="/reports"
+                      className={`text-sm font-bold uppercase tracking-wider transition-all ${
+                        isActive("/reports")
+                          ? "text-emerald-400"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      Analytics
+                    </Link>
+                  </>
+                )}
+
+                <div className="flex items-center gap-4 pl-4 border-l border-slate-700">
+                  <span className="text-xs font-medium text-slate-500">
+                    {user?.name}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-red-500 transition-all border border-slate-700"
+                  >
                     Logout
                   </button>
-                  <button className="flex items-center space-x-2 bg-slate-800 rounded-full py-2 px-4 hover:bg-slate-700 transition-colors focus:ring-4 focus:ring-slate-200">
-                    <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
-                      {user.name.charAt(0)}
-                    </div>
-                    <span className="text-sm font-medium text-gray-200">Profile</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" className="text-gray-300 hover:text-emerald-300 transition-colors font-medium">
-                    Log in
-                  </Link>
-                  <Link to="/signup" className="bg-emerald-600 text-white px-4 py-2 rounded-full font-medium hover:bg-emerald-700 transition-colors">
-                    Sign up
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-300 hover:text-white focus:outline-none"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                {isOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-800 shadow-inner">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive(link.path)
-                    ? 'text-emerald-400 bg-slate-700'
-                    : 'text-gray-300 hover:text-emerald-300 hover:bg-slate-700'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-            {isAuthenticated ? (
-              <button 
-                onClick={() => { handleLogout(); setIsOpen(false); }}
-                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-emerald-300 hover:bg-slate-700"
-              >
-                Logout
-              </button>
+                </div>
+              </>
             ) : (
-              <>
-                <Link to="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-emerald-300 hover:bg-slate-700">
+              <div className="flex items-center gap-6">
+                <Link
+                  to="/admin/login"
+                  className="text-slate-500 hover:text-emerald-400 text-xs font-bold uppercase tracking-widest transition-colors"
+                >
+                  Admin
+                </Link>
+                <Link
+                  to="/login"
+                  className="text-slate-300 hover:text-white font-bold text-sm transition-colors"
+                >
                   Log in
                 </Link>
-                <Link to="/signup" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-emerald-400 hover:text-emerald-300 hover:bg-slate-700">
-                  Sign up
+                <Link
+                  to="/signup"
+                  className="bg-emerald-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20 active:scale-95"
+                >
+                  Join Now
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

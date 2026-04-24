@@ -63,7 +63,7 @@ public class MainController extends HttpServlet {
         String path = request.getServletPath();
 
         if (path.equals("/addStudent")) {
-            Student s = new Student(0, request.getParameter("name"), request.getParameter("phone"), request.getParameter("email"));
+            Student s = new Student(0, request.getParameter("name"), request.getParameter("phone"), request.getParameter("email"), null);
             studentService.registerStudent(s);
             response.sendRedirect("viewStudents");
         } else if (path.equals("/addInstructor")) {

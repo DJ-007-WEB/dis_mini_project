@@ -1,8 +1,8 @@
-import React, { memo } from 'react';
+import React, { memo } from "react";
 
-const ActivityChart = ({ data = [], dateRange = '7 days' }) => {
+const ActivityChart = ({ data = [], dateRange = "7 days" }) => {
   const maxHours = Math.max(...data, 5); // Default min scale 5
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
@@ -14,7 +14,7 @@ const ActivityChart = ({ data = [], dateRange = '7 days' }) => {
           <option>90 days</option>
         </select>
       </div>
-      
+
       <div className="h-48 flex items-end justify-between gap-2 relative mt-4">
         {/* Y-axis labels */}
         <div className="absolute -left-2 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 py-1">
@@ -22,7 +22,7 @@ const ActivityChart = ({ data = [], dateRange = '7 days' }) => {
           <span>{Math.ceil(maxHours / 2)}h</span>
           <span>0h</span>
         </div>
-        
+
         {/* Grid lines */}
         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pl-6 border-b border-gray-200">
           <div className="border-t border-gray-100 w-full h-0 border-dashed"></div>
@@ -35,9 +35,12 @@ const ActivityChart = ({ data = [], dateRange = '7 days' }) => {
           {data.map((value, idx) => {
             const heightPercentage = `${(value / maxHours) * 100}%`;
             return (
-              <div key={idx} className="flex flex-col items-center group w-full px-1 sm:px-2">
+              <div
+                key={idx}
+                className="flex flex-col items-center group w-full px-1 sm:px-2"
+              >
                 <div className="relative w-full flex justify-center h-full items-end pb-1">
-                  <div 
+                  <div
                     className="w-full max-w-[40px] bg-emerald-600 rounded-t-md transition-all duration-1000 ease-out group-hover:bg-emerald-500"
                     style={{ height: heightPercentage }}
                   ></div>
@@ -46,7 +49,9 @@ const ActivityChart = ({ data = [], dateRange = '7 days' }) => {
                     {value} hrs
                   </div>
                 </div>
-                <span className="text-xs text-gray-500 mt-2">{days[idx % 7]}</span>
+                <span className="text-xs text-gray-500 mt-2">
+                  {days[idx % 7]}
+                </span>
               </div>
             );
           })}

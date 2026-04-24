@@ -23,15 +23,29 @@ public class DBConnection {
                 log.warn("Could not load application.properties from classpath, using defaults.", ex);
             }
 
-            String url = props.getProperty("db.url", "jdbc:mysql://localhost:3306/course_management_db");
-            String user = props.getProperty("db.user", "root");
-            String pass = props.getProperty("db.password", "password");
+            // Priority: Env Var > application.properties > defaults
+            String url = System.getenv("DB_URL");
+            if (url == null) url = props.getProperty("db.url", "jdbc:mysql://localhost:3306/course_management_db");
+            
+            String user = System.getenv("DB_USER");
+            if (user == null) user = props.getProperty("db.user", "root");
+            
+            String pass = System.getenv("DB_PASSWORD");
+            if (pass == null) pass = props.getProperty("db.password", "password");
+
+            int poolSize = 10;
+            String poolSizeEnv = System.getenv("DB_POOL_SIZE");
+            if (poolSizeEnv != null) {
+                try { poolSize = Integer.parseInt(poolSizeEnv); } catch (NumberFormatException ignored) {}
+            } else {
+                poolSize = Integer.parseInt(props.getProperty("db.pool.size", "10"));
+            }
 
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(url);
             config.setUsername(user);
             config.setPassword(pass);
-            config.setMaximumPoolSize(Integer.parseInt(props.getProperty("db.pool.size", "10")));
+            config.setMaximumPoolSize(poolSize);
             config.setPoolName("cms-hikari-pool");
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");

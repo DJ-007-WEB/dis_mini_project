@@ -21,13 +21,9 @@ public class CourseRepository {
         List<Course> courses = new ArrayList<>();
         String sql = "SELECT course_id, title, description, instructor_id FROM course";
         try (Connection conn = DBConnection.getConnection()) {
-            if (conn == null) {
-                log.error("Database connection is null");
-                return courses;
-            }
+            if (conn == null) return courses;
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(sql)) {
-                
                 while (rs.next()) {
                     courses.add(new Course(
                             rs.getInt("course_id"),
@@ -36,7 +32,6 @@ public class CourseRepository {
                             rs.getInt("instructor_id")
                     ));
                 }
-                log.info("Fetched {} courses", courses.size());
             }
         } catch (SQLException e) {
             log.error("Error fetching courses", e);
@@ -44,22 +39,56 @@ public class CourseRepository {
         return courses;
     }
 
-    public void addCourse(Course course) {
+    public boolean addCourse(Course course) {
         String sql = "INSERT INTO course (title, description, instructor_id) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection()) {
-            if (conn == null) {
-                log.error("Database connection is null");
-                return;
-            }
+            if (conn == null) return false;
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, course.getTitle());
                 pstmt.setString(2, course.getDesc());
-                pstmt.setInt(3, course.getInstructorId());
-                pstmt.executeUpdate();
+                pstmt.setInt(3, course.getInstructorId() > 0 ? course.getInstructorId() : 1); // Default to instructor 1
+                int affected = pstmt.executeUpdate();
                 log.info("Course added successfully: {}", course.getTitle());
+                return affected > 0;
             }
         } catch (SQLException e) {
             log.error("Error adding course: {}", course.getTitle(), e);
+            return false;
+        }
+    }
+
+    public boolean updateCourse(Course course) {
+        String sql = "UPDATE course SET title = ?, description = ?, instructor_id = ? WHERE course_id = ?";
+        try (Connection conn = DBConnection.getConnection()) {
+            if (conn == null) return false;
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, course.getTitle());
+                pstmt.setString(2, course.getDesc());
+                pstmt.setInt(3, course.getInstructorId() > 0 ? course.getInstructorId() : 1);
+                pstmt.setInt(4, course.getCourseId());
+                int affected = pstmt.executeUpdate();
+                log.info("Course updated successfully: {}", course.getTitle());
+                return affected > 0;
+            }
+        } catch (SQLException e) {
+            log.error("Error updating course", e);
+            return false;
+        }
+    }
+
+    public boolean deleteCourse(int courseId) {
+        String sql = "DELETE FROM course WHERE course_id = ?";
+        try (Connection conn = DBConnection.getConnection()) {
+            if (conn == null) return false;
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, courseId);
+                int affected = pstmt.executeUpdate();
+                log.info("Course deleted successfully: ID {}", courseId);
+                return affected > 0;
+            }
+        } catch (SQLException e) {
+            log.error("Error deleting course", e);
+            return false;
         }
     }
 }

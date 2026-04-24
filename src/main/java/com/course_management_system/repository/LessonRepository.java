@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Repository class for managing Lesson data.
@@ -32,5 +34,30 @@ public class LessonRepository {
         } catch (SQLException e) {
             log.error("Error adding lesson: {}", title, e);
         }
+    }
+
+    public List<com.course_management_system.model.Lesson> getLessonsByCourseId(int courseId) {
+        List<com.course_management_system.model.Lesson> lessons = new ArrayList<>();
+        String sql = "SELECT less_id, course_id, title, description, less_url FROM lessons WHERE course_id = ?";
+        try (Connection conn = DBConnection.getConnection()) {
+            if (conn == null) return lessons;
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, courseId);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        lessons.add(new com.course_management_system.model.Lesson(
+                                rs.getInt("less_id"),
+                                rs.getInt("course_id"),
+                                rs.getString("title"),
+                                rs.getString("description"),
+                                rs.getString("less_url")
+                        ));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error fetching lessons for course ID: {}", courseId, e);
+        }
+        return lessons;
     }
 }

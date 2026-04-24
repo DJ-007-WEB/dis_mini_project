@@ -9,7 +9,7 @@ public class TestBackend {
         StudentRepository repo = new StudentRepository();
 
         // 1. Test adding a student
-        Student s = new Student(0, "Test User", "9999999999", "test@pict.edu");
+        Student s = new Student(0, "Test User", "9999999999", "test@pict.edu", "testPass123");
         repo.addStudent(s);
         System.out.println("Student Added successfully!");
 

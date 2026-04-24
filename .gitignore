@@ -38,3 +38,11 @@ build/
 *.gz
 tools/
 *.log
+
+# Node dependencies
+node_modules/
+frontend/node_modules/
+
+# Environment variables
+.env
+frontend/.env

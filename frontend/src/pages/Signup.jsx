@@ -1,103 +1,109 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AppContext } from '../context/AppContext';
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 const Signup = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { signup } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (signup(name, email, password)) {
-      navigate('/dashboard');
+    const success = await signup(name, email, password);
+    if (success) {
+      navigate("/login");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
-          Create your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-emerald-600 hover:text-emerald-500">
-            Sign in
-          </Link>
-        </p>
-      </div>
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-black text-slate-900 mb-2">
+            Create Account
+          </h2>
+          <p className="text-slate-500 font-medium">
+            Join a community of high-performance learners
+          </p>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="John Doe"
-                />
-              </div>
-            </div>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label
+              htmlFor="name"
+              className="text-slate-700 font-bold mb-2 block"
+            >
+              Full Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none"
+              placeholder="John Doe"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="fake@example.com"
-                />
-              </div>
-            </div>
+          <div className="form-group">
+            <label
+              htmlFor="email"
+              className="text-slate-700 font-bold mb-2 block"
+            >
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none"
+              placeholder="fake@example.com"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="Minimum 6 characters"
-                />
-              </div>
-            </div>
+          <div className="form-group">
+            <label
+              htmlFor="password"
+              className="text-slate-700 font-bold mb-2 block"
+            >
+              Secure Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none"
+              placeholder="Minimum 6 characters"
+            />
+          </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-              >
-                Sign up
-              </button>
-            </div>
-          </form>
+          <button
+            type="submit"
+            className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-emerald-600 transition-all active:scale-95 shadow-xl shadow-slate-900/10"
+          >
+            Register Student Profile
+          </button>
+        </form>
+
+        <div className="mt-8 pt-8 border-t border-slate-100 text-center">
+          <p className="text-slate-500 text-sm">
+            Already registered?{" "}
+            <Link to="/login" className="text-emerald-600 font-bold hover:underline">
+              Sign In Here
+            </Link>
+          </p>
         </div>
       </div>
     </div>
